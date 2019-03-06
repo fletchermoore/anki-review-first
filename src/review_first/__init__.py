@@ -1,4 +1,3 @@
-from aqt import mw
 
 import anki.sched as Sched
 
@@ -32,10 +31,19 @@ import anki.sched as Sched
 
 def reorderedGetCard(self):
         "Return the next due card id, or None."
+        # if you review first, there is no initial filling of the learn queue
+        # once you miss a card, it gets added to the learn queue
+        # this causes the program to think the learn queue consists of only your misses
+        # to avoid this, we will fill the learn queue right now
+        self._fillLrn()
+
         # card due for review?
+        # this call has been moved to first from below
         c = self._getRevCard()
         if c:
             return c
+
+        # the remainder of this function is the same as it was previously.
         # learning card due?
         c = self._getLrnCard()
         if c:
